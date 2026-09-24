@@ -1,0 +1,43 @@
+;; What this vertical's robot physically does, declared for
+;; kotoba.robotics.process (kotoba-lang/robotics). `kbb -M:physics` runs it.
+;;
+;; README "Robotics premise": a workshop scheduling/logistics coordination
+;; robot handles crew scheduling, job/commission records and paint/solvent/
+;; etching-materials supply orders for a sign & decorative-craft crew
+;; (ISCO 7316). Its physical work: carrying sign panels from the paint shop to
+;; dispatch, bringing a painted board up to temperature in the drying booth,
+;; and draining the etching bath into the neutralisation tank.
+;;
+;; Every number without a cited source is marked `estimate` in its :basis.
+;; Replacing an estimate with a sourced value is this bot's growth work.
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isco-7316"
+ :cases
+ [{:id :sign-panels-to-dispatch
+   :kind :transport
+   :procedure "cart carries a stack of finished sign panels from the paint shop to dispatch"
+   :params {:mass-kg 50.0 :payload-kg 40.0 :v-max-mps 1.0 :a-max-mps2 0.4
+            :brake-decel-mps2 0.6 :drive-force-n 120.0 :crr 0.02
+            :cog-height-m 0.60 :support-half-length-m 0.30 :max-time-s 1200.0}
+   :sweep {:param :distance-m :values [10.0 20.0 40.0 60.0 80.0]}
+   :quantity :cycle-time-s
+   :limit {:max 60.0 :basis "estimate: one paint-shop-to-dispatch leg inside the courier pick-up window"}
+   :boundary {:lo 5.0 :hi 150.0}}
+  {:id :painted-board-drying-booth
+   :kind :thermal
+   :procedure "a painted MDF sign board warms in the 50 C drying booth until its unpainted back reaches 45 C"
+   :params {:thickness-m 0.018 :conductivity-w-mk 0.14 :density-kg-m3 700.0 :specific-heat-j-kgk 1700.0
+            :t0-c 18.0 :t-hot-c 50.0 :h-front-w-m2k 20.0 :t-back-ambient-c 50.0 :h-back-w-m2k 5.0
+            :threshold-c 45.0 :duration-s 14400.0 :nodes 11}
+   :sweep {:param :thickness-m :values [0.006 0.009 0.012 0.018 0.025]}
+   :quantity :time-to-threshold-s
+   :limit {:max 3600.0 :basis "estimate: one booth cycle of an hour; the paint maker's force-dry temperature/time is the source to cite"}
+   :boundary {:lo 0.003 :hi 0.05}}
+  {:id :etch-bath-drain
+   :kind :tank-drain
+   :procedure "etching bath drains by gravity through its bottom valve into the neutralisation tank"
+   :params {:tank-area-m2 0.5 :h0-m 0.40 :h-target-m 0.02 :cd 0.62 :q-in-m3s 0.0}
+   :sweep {:param :orifice-area-m2 :values [0.0001 0.0002 0.0004 0.0008 0.0012]}
+   :quantity :time-to-target-s
+   :limit {:max 600.0 :basis "estimate: the bath must be empty within the 10-minute changeover slot"}
+   :boundary {:lo 0.00005 :hi 0.003}}]}
