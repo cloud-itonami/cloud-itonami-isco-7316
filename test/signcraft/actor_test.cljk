@@ -1,5 +1,5 @@
 (ns signcraft.actor-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [signcraft.actor :as actor]
             [signcraft.store :as store]))
 

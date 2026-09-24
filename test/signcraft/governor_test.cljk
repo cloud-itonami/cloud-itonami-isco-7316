@@ -1,5 +1,5 @@
 (ns signcraft.governor-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [signcraft.store :as store]
             [signcraft.advisor :as advisor]
             [signcraft.governor :as governor]))
