@@ -1,7 +1,7 @@
 (ns signcraft.store
   "SSoT for the ISCO-08 7316 sign & decorative-craft workshop
   scheduling/logistics coordination actor (itonami actor pattern,
-  ADR-2607121000 / CLAUDE.md Actors section; README's 'Robotics
+  ADR-2607121000 / AGENTS.md Actors section; README's 'Robotics
   premise' — a workshop scheduling/logistics coordination robot
   performs crew scheduling, job/commission/progress-record logging and
   paint/solvent/etching-materials supply-order coordination for a
